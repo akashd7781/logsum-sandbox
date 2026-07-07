@@ -1,6 +1,6 @@
 # Questions
 
-Files read: [src/logsum.py](src/logsum.py), [spec.md](spec.md), [.github/workflows/ci.yml](.github/workflows/ci.yml), [test/test_logsum.py](test/test_logsum.py), [pyproject.toml](pyproject.toml).
+Files read: [src/logsum.py](src/logsum.py), [spec.md](spec.md), [.github/workflows/ci.yml](.github/workflows/ci.yml), [tests/test_logsum.py](tests/test_logsum.py), [pyproject.toml](pyproject.toml).
 
 ## Where is the grouping rule?
 The grouping logic is in [src/logsum.py](src/logsum.py#L53-L57): each row is normalized, then stored under the `(level, service)` tuple key in `groups[(level, service)]`. The spec defines the exact key at [spec.md](spec.md#L43): `(level, service)`.

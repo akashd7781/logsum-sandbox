@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+
 @pytest.fixture
 def run_cli():
     def _run(args, stdin=None):
@@ -157,10 +158,10 @@ def test_missing_required_field_value(temp_csv_factory, tmp_path, run_cli):
 
 
 @pytest.mark.parametrize("invalid_timestamp", [
-    "07/07/2026 14:30:00",       # Completely wrong format
-    "2026-07-07T25:30:00Z",      # Out of bounds hour
-    "not-a-timestamp",           # Plain text garbage
-    "",                          # Empty string
+    "07/07/2026 14:30:00",
+    "2026-07-07T25:30:00Z",
+    "not-a-timestamp",
+    "",
 ])
 def test_malformed_timestamps(temp_csv_factory, tmp_path, run_cli, invalid_timestamp):
     rows = [

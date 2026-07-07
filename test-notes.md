@@ -4,7 +4,7 @@
 
 Both failures were diagnosed by:
 1. Running `pytest -v` to identify the two failing tests.
-2. Reading `spec.md`, `src/logsum.py`, and `test/test_logsum.py` side-by-side.
+2. Reading `spec.md`, `src/logsum.py`, and `tests/test_logsum.py` side-by-side.
 3. Tracing the code path for each failing input to understand exactly what the
    implementation does versus what the test asserts.
 
