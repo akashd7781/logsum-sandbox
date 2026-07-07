@@ -4,23 +4,26 @@
 - GPT-5.4 mini
 
 ## Context loaded
-- Current workspace files: `src/logsum.py`, `spec.md`, `test/test_logsum.py`
-- Existing branch state and diff summary from `git status --short` and `git diff --stat`
-- Existing test suite results from `pytest -v`
-- Prior task notes in `refactor-notes.md` were present but not part of this change
+- Current workspace files: `src/logsum.py`, `spec.md`, `test/test_logsum.py`, `.github/workflows/ci.yml`, `pyproject.toml`
+- Existing branch state and diff summary from `git status --short`
+- Prior verification notes in `questions.md`
+- Existing refactor notes in `refactor-notes.md`
 
 ## Files changed
+- `pyproject.toml`
 - `src/logsum.py`
-- `spec.md`
 - `test/test_logsum.py`
+- `refactor-notes.md`
+- `provenance-note.md`
 
 ## Plan deviations
-- None. The change stayed within the approved scope: add `--min-count N`, document it, and add tests.
+- None. The replay stayed within the approved scope: align the implementation with the spec, refresh tests, keep CI pinned to Python 3.11, and record provenance. The existing CI workflow already matched the intended setup, so it did not need an edit.
 
 ## Untested items
-- Invalid `--min-count` values such as non-integer input
-- Missing value after `--min-count`
-- The usage message text for the new flag
+- `--min-count` invalid values and missing values
+- Output ordering beyond the existing deterministic sort
+- The CI workflow on GitHub Actions itself
 
 ## Verification
-- `pytest -v` completed successfully: 11 passed
+- `pytest -v` completed successfully
+- `ruff check .` is the CI lint step; local reproduction was blocked because `ruff` is not installed in this environment

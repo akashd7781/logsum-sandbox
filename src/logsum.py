@@ -32,6 +32,16 @@ def format_timestamp(value):
     return value.isoformat().replace("+00:00", "Z")
 
 
+def update_group(group, timestamp):
+    group["count"] += 1
+
+    if group["first_seen"] is None or timestamp < group["first_seen"]:
+        group["first_seen"] = timestamp
+
+    if group["last_seen"] is None or timestamp > group["last_seen"]:
+        group["last_seen"] = timestamp
+
+
 def process(input_path, output_path, min_count=None):
     groups = defaultdict(
         lambda: {
@@ -60,13 +70,7 @@ def process(input_path, output_path, min_count=None):
             service = normalise_service(row.get("service"))
 
             group = groups[(level, service)]
-            group["count"] += 1
-
-            if group["first_seen"] is None or timestamp < group["first_seen"]:
-                group["first_seen"] = timestamp
-
-            if group["last_seen"] is None or timestamp > group["last_seen"]:
-                group["last_seen"] = timestamp
+            update_group(group, timestamp)
 
     with open(output_path, "w", encoding="utf-8", newline="") as outfile:
         writer = csv.writer(outfile)
