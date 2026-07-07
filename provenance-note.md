@@ -4,7 +4,7 @@
 - GPT-5.4 mini
 
 ## Context loaded
-- Current workspace files: `src/logsum.py`, `spec.md`, `test/test_logsum.py`, `.github/workflows/ci.yml`, `pyproject.toml`
+- Current workspace files: `src/logsum.py`, `spec.md`, `tests/test_logsum.py`, `.github/workflows/ci.yml`, `pyproject.toml`
 - Existing branch state and diff summary from `git status --short`
 - Prior verification notes in `questions.md`
 - Existing refactor notes in `refactor-notes.md`
@@ -12,7 +12,7 @@
 ## Files changed
 - `pyproject.toml`
 - `src/logsum.py`
-- `test/test_logsum.py`
+- `tests/test_logsum.py`
 - `refactor-notes.md`
 - `provenance-note.md`
 
