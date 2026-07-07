@@ -1,0 +1,6 @@
+timestamp,level,service,message
+2026-07-07T10:00:00Z,error,Payments,Timeout connecting
+2026-07-07T10:01:00Z,error,Payments,Timeout connecting again
+2026-07-07T10:02:00Z,,Auth,Missing level example
+not-a-date,INFO,Search,Bad timestamp example
+2026-07-07T10:03:00Z,warning,Search,Slow response detected
