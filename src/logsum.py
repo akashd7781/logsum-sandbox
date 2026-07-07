@@ -32,7 +32,7 @@ def format_timestamp(value):
     return value.isoformat().replace("+00:00", "Z")
 
 
-def process(input_path, output_path):
+def process(input_path, output_path, min_count=None):
     groups = defaultdict(
         lambda: {
             "count": 0,
@@ -59,9 +59,7 @@ def process(input_path, output_path):
             level = normalise_level(row.get("level"))
             service = normalise_service(row.get("service"))
 
-            group_key = (level, service)
-
-            group = groups[group_key]
+            group = groups[(level, service)]
             group["count"] += 1
 
             if group["first_seen"] is None or timestamp < group["first_seen"]:
@@ -73,18 +71,13 @@ def process(input_path, output_path):
     with open(output_path, "w", encoding="utf-8", newline="") as outfile:
         writer = csv.writer(outfile)
 
-        writer.writerow(
-            [
-                "level",
-                "service",
-                "count",
-                "first_seen",
-                "last_seen",
-            ]
-        )
+        writer.writerow(["level", "service", "count", "first_seen", "last_seen"])
 
         # Deterministic output ordering: level, then service
         for (level, service), values in sorted(groups.items()):
+            if min_count is not None and values["count"] < min_count:
+                continue
+
             writer.writerow(
                 [
                     level,
@@ -98,22 +91,53 @@ def process(input_path, output_path):
     return 3 if malformed_timestamps else 0
 
 
+def parse_arguments(argv):
+    input_output_args = []
+    min_count = None
+    index = 0
+
+    while index < len(argv):
+        argument = argv[index]
+
+        if argument == "--min-count":
+            if index + 1 >= len(argv):
+                return None
+
+            try:
+                min_count = int(argv[index + 1])
+            except ValueError:
+                return None
+
+            index += 2
+            continue
+
+        input_output_args.append(argument)
+        index += 1
+
+    if len(input_output_args) != 2:
+        return None
+
+    return input_output_args[0], input_output_args[1], min_count
+
+
 def main(argv=None):
     argv = argv or sys.argv[1:]
 
-    if len(argv) != 2:
-        print("Usage: python -m src.logsum <input.csv> <output.csv>")
+    parsed_args = parse_arguments(argv)
+    if parsed_args is None:
+        print("Usage: python -m src.logsum [--min-count N] <input.csv> <output.csv>")
         return 1
 
-    input_path = Path(argv[0])
-    output_path = Path(argv[1])
+    input_path = Path(parsed_args[0])
+    output_path = Path(parsed_args[1])
+    min_count = parsed_args[2]
 
     if not input_path.exists():
         print(f"Input file not found: {input_path}")
         return 1
 
     try:
-        return process(input_path, output_path)
+        return process(input_path, output_path, min_count=min_count)
     except ValueError as exc:
         print(str(exc))
         return 2
