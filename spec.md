@@ -23,6 +23,10 @@ Create a command-line tool that reads an `events.csv` file and produces a `summa
     - `first_seen`
     - `last_seen`
 
+## Command-Line Options
+- `--min-count N`: only write groups whose count is greater than or equal to `N`.
+- Default: omit the flag to write all groups.
+
 ## Normalisation Rules
 - Trim leading and trailing whitespace from all fields.
 - `level` is converted to uppercase.

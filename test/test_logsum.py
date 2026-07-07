@@ -114,6 +114,41 @@ def test_successful_normalization_and_grouping(temp_csv_factory, tmp_path, run_c
     assert group_3["last_seen"] == "2026-07-07T16:00:00Z"
 
 
+def test_min_count_filters_groups(temp_csv_factory, tmp_path, run_cli):
+    """--min-count should keep only groups whose count meets the threshold."""
+    input_rows = [
+        ["2026-07-07T14:30:00Z", "  info  ", "  auth-service  ", "User login successful"],
+        ["2026-07-07T14:35:00Z", "INFO", "Auth-Service", "User logged out"],
+        ["2026-07-07T14:20:00Z", "Info", "auth-service", "Different message"],
+        ["2026-07-07T15:00:00Z", "ERROR", "db-service", "Connection timeout"],
+        ["2026-07-07T16:00:00Z", "WARN", "api", "Rate limit"],
+        ["2026-07-07T16:00:00Z", "WARN", "api", "Rate limit"],
+    ]
+
+    input_file = temp_csv_factory("events.csv", input_rows)
+    output_file = tmp_path / "summary.csv"
+
+    result = run_cli(["--min-count", "2", str(input_file), str(output_file)])
+
+    assert result.returncode == 0, f"CLI execution failed: {result.stderr}"
+
+    with open(output_file, mode="r", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        rows = list(reader)
+
+    assert reader.fieldnames == ["level", "service", "count", "first_seen", "last_seen"]
+    assert len(rows) == 2
+
+    summary_map = {(row["level"], row["service"]): row for row in rows}
+
+    assert ("INFO", "auth-service") in summary_map
+    assert summary_map[("INFO", "auth-service")]["count"] == "3"
+
+    assert ("WARN", "api") in summary_map
+    assert summary_map[("WARN", "api")]["count"] == "2"
+    assert ("ERROR", "db-service") not in summary_map
+
+
 # ============================================================================
 # Tests: Validation & Error Handling (Non-zero exit codes)
 # ============================================================================
