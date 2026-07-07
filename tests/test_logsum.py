@@ -1,3 +1,5 @@
+"""Independent spec-derived tests for logsum, generated in isolation tier 2."""
+
 import csv
 import subprocess
 import sys
